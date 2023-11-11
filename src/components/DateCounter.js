@@ -1,20 +1,22 @@
 import { useReducer } from "react";
-import { act } from "react-dom/test-utils";
+const initialState = { count: 0, step: 1 };
 function reducer(state, action) {
   console.log(state, action);
   // if (action.type === "inc") return state + 1;
   // if (action.type === "dec") return state - 1;
   // if (action.type === "setCount") return action.payLoad;
-  switch (state.type) {
+  switch (action.type) {
     case "dec":
-      return { ...state, count: state - state.step };
+      return { ...state, count: state.count - state.step };
     case "inc":
-      return { ...state, count: state + state.step };
+      return { ...state, count: state.count + state.step };
 
     case "setCount":
       return { ...state, count: action.payLoad };
     case "setStep":
       return { ...state, step: action.payLoad };
+    case "reset":
+      return initialState;
     default:
       throw new Error("Unknown action");
   }
@@ -22,7 +24,7 @@ function reducer(state, action) {
 function DateCounter() {
   // const [count, setCount] = useState(0);
   // const [step, setStep] = useState(1);
-  const initialState = { count: 0, step: 1 };
+
   const [state, dispatch] = useReducer(reducer, initialState);
   const { count, step } = state;
 
@@ -53,8 +55,7 @@ function DateCounter() {
   };
 
   const reset = function () {
-    // setCount(0);
-    // setStep(1);
+    dispatch({ type: "reset" });
   };
 
   return (
@@ -62,7 +63,7 @@ function DateCounter() {
       <div>
         <input
           type="range"
-          min="0"
+          min="1"
           max="10"
           value={step}
           onChange={defineStep}
